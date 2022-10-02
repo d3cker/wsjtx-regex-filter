@@ -97,6 +97,9 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
+      - name: what inside
+        run: ls -l && pwd
+
       - name: Release draft
         uses: actions/create-release@v1
         id: create_release_draft
@@ -109,6 +112,9 @@ jobs:
             Automatic build on push. This is not a release.
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: what inside
+        run: ls -l && pwd
 
       - name: upload focal artifact
         uses: actions/upload-release-asset@v1

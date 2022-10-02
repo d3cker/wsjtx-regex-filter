@@ -1,8 +1,16 @@
-# WSJT-X 2.5.4 - Regex ignore filter 
+# WSJT-X 2.5.4 - Regex ignore filter
+
+## Build and binaries
 
 In order to apply this change just overwrite contents of root and `widgets/` 
 folders. To find out what has changed execute a diff or search for `SP6XD` 
 comments in the source code.
+
+Navigate to [GitHub Actions](https://github.com/d3cker/wsjtx-regex-filter/actions) for build process details.
+[Releases](https://github.com/d3cker/wsjtx-regex-filter/releases):
+- Ubuntu Focal 20.04
+- Ubuntu Jammy 22.04
+- Patched source code tgz archive (follow original INSTALL instructions)
 
 ## Features
 - Added option: Setup -> RX/TX Macros -> RX regex ignore filter
@@ -13,7 +21,7 @@ comments in the source code.
 
 ![Main window](images/main.png)
 
-Just like that. Tested during WW DIGI contest.
+Just like that. Tested during WW DIGI'22 contest.
 
 ## Note
 

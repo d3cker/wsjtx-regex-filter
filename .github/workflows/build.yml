@@ -18,6 +18,7 @@ jobs:
           path: wsjtx-2.5.4.tgz
 
   release:
+    needs: ['download_wsjtx']
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts

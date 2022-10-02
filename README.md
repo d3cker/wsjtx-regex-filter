@@ -2,28 +2,29 @@
 
 ## Build and binaries
 
-In order to apply this change just overwrite contents of root and `widgets/` 
-folders. To find out what has changed execute a diff or search for `SP6XD` 
-comments in the source code.
-
 Navigate to [GitHub Actions](https://github.com/d3cker/wsjtx-regex-filter/actions) for build process details.
-[Releases](https://github.com/d3cker/wsjtx-regex-filter/releases):
+
+[Available releases](https://github.com/d3cker/wsjtx-regex-filter/releases):
 - Ubuntu Focal 20.04
 - Ubuntu Jammy 22.04
-- Patched source code tgz archive (follow original INSTALL instructions)
+- Patched source code tgz archive
+
+If you want to compile this patch by your own, just grab patched source code from 
+[Releases](https://github.com/d3cker/wsjtx-regex-filter/releases) page and follow
+original INSTALL instructions.
 
 ## Features
 - Added option: Setup -> RX/TX Macros -> RX regex ignore filter
 ![Options](images/options.png)
 - CQ answers from matched callsigns are ignored
 - reply to CQ from matched callsigns are ignored
-- Manual clicks (calls) to matched stations are ignored
+- Manual clicks (calls) on matched stations are ignored
 
 ![Main window](images/main.png)
 
 Just like that. Tested during WW DIGI'22 contest.
 
-## Note
+## Note on purpose
 
 I have to confess that I'm not a software developer and this patch is just 
 a dirty hack to make it possible to make auto QSO with all except Russians.

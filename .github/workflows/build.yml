@@ -90,15 +90,12 @@ jobs:
             wsjtx-patched-code
             wsjtx-source-code
 
-  release:
+  release_draft:
     needs: ['clean_artifacts']
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
-
-      - name: what inside
-        run: ls -l && pwd
 
       - name: Release draft
         uses: actions/create-release@v1
@@ -113,15 +110,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: what inside
-        run: ls -l && pwd
-
       - name: upload focal artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx_2.5.4_focal_amd64.deb
+          asset_path: wsjtx-focal-package/wsjtx_2.5.4_focal_amd64.deb
           asset_name: wsjtx_2.5.4_focal_amd64.deb
           asset_content_type: application/gzip

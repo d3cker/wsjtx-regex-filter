@@ -31,19 +31,43 @@ jobs:
       - name: Unpack the source
         run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-2.5.4.tgz -C unpack/
 
-      - name: Copy pattch
-        run: pwd && ls -l && ls -l unpack/
+      - name: Prepare source
+        run: mkdir newsrc && tar -xzvf unpack/wsjtx-2.5.4/src/wsjtx.tgz -C newsrc/
+
+      - name: Patch WSJTX
+        run: cp -R patch/* newsrc/wsjtx/
+
+      - name: Repack source
+        run: cd newsrc/ && tar -czvf wsjtx.tgz * && cd ..
+
+      - name: Copy package
+        run: cp newsrc/wsjtx.tgz unpack/wsjtx-2.5.4/src/
+
+      - name: Generate md5sum
+        run: cd unpack/wsjtx-2.5.4/src/ && md5sum wsjtx.tgz > wsjtx.tgz.md5sum
+
+      - name: Create new archive
+        run: cd unpack/ && tar -czvf wsjtx-patched-2.5.4.tgz *
+
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-patched-code
+          path: upload/wsjtx-patched-2.5.4.tgz
 
 
-#  build_focal:
-#    needs: ['patch_source']
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download artifacts
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: wsjtx-patched-code
-#
+  build_focal:
+    needs: ['patch_source']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: where am I
+        run: pwd && ls -l 
+
 #      - name: Create Docker Image
 #        run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build
 #

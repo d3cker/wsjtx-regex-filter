@@ -26,13 +26,17 @@ jobs:
         with:
           name: wsjtx-source-code
 
+      - name: Set current date as env variable
+        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
+
       - name: release
         uses: actions/create-release@v1
         id: create_release
         with:
           draft: true
           prerelease: true
-          release_name: Release ${{ github.ref_name }} ${{ github.sha }} 
+          release_name: Release ${NOW}
           tag_name: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ github.token }}

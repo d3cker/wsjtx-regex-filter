@@ -122,7 +122,7 @@ jobs:
         with:
           draft: true
           prerelease: true
-          release_name: Release ${{ github.run_number }}
+          release_name: Development build ${{ github.run_number }}
           tag_name: ${{ github.ref }}
           body: |
             Automatic build on push. This is not a release.
@@ -148,6 +148,17 @@ jobs:
           asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
           asset_name: wsjtx_2.5.4_jammy_amd64.deb
           asset_content_type: application/gzip
+
+      - name: upload patched source code
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-patched-code/wsjtx-patched-2.5.4.tgz
+          asset_name: wsjtx-patched-2.5.4.tgz
+          asset_content_type: application/gzip
+
 
   clean_artifacts:
     needs: ['release_draft']

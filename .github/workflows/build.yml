@@ -11,16 +11,13 @@ jobs:
       - name: Downlaod source code
         run: wget https://physics.princeton.edu/pulsar/k1jt/wsjtx-2.5.4.tgz
 
-      - name: display variables
-        run: echo $GITHUB_WORKSPACE && echo ${{runner.workspace}}
-
       - name: Save WSJTX for next jobs
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-source-code
-          path: ${{runner.workspace}}/wsjtx-regex-filter/wsjtx-2.5.4.tgz
+          path: $GITHUB_WORKSPACE/wsjtx-2.5.4.tgz
 
-  build_focal:
+  patch_source:
     needs: ['download_wsjtx']
     runs-on: ubuntu-latest
     steps:
@@ -28,6 +25,24 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-source-code
+
+      - name: Unpack the source
+        run: mkdir $GITHUB_WORKSPACE/unpack && tar -xzvf $GITHUB_WORKSPACE/wsjtx-source-code/wsjtx-v2.5.4.tgz $GITHUB_WORSKPACE/unpack/
+
+      - name: Copy pattch
+        run: pwd && ls -l && $GITHUB_WORSKPACE/unpack/ 
+
+
+  build_focal:
+    needs: ['patch_source']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
 
       - name: Create Docker Image
         run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build

@@ -32,7 +32,7 @@ jobs:
         with:
           draft: true
           prerelease: true
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }} ${{ github.sha }} 
           tag_name: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ github.token }}

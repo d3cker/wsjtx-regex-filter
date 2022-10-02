@@ -7,11 +7,11 @@ env:
 jobs:
   build_focal:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-        - name: Create Docker Image
-          run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build
+      - name: Create Docker Image
+        run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build
 
-        - name: Run Container
-          run: docker run --name build -v $GITHUB_WORKSPACE:/tmp ubuntu_focal_build ps uax
+      - name: Run Container
+        run: docker run --name build -v $GITHUB_WORKSPACE:/tmp ubuntu_focal_build ps uax

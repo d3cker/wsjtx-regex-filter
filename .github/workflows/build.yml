@@ -28,11 +28,11 @@ jobs:
         with:
           name: wsjtx-source-code
 
-#      - name: Unpack the source
-#        run: mkdir $GITHUB_WORKSPACE/unpack && tar -xzvf $GITHUB_WORKSPACE/wsjtx-source-code/wsjtx-v2.5.4.tgz $GITHUB_WORSKPACE/unpack/
+      - name: Unpack the source
+        run: mkdir unpack && tar -xzvf wsjtx-v2.5.4.tgz unpack/
 
       - name: Copy pattch
-        run: mkdir $GITHUB_WORKSPACE/unpack && pwd && ls -l && $GITHUB_WORSKPACE/unpack/
+        run: pwd && ls -l && ls -l unpack/
 
 
   build_focal:

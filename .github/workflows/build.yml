@@ -29,7 +29,7 @@ jobs:
           name: wsjtx-source-code
 
       - name: Unpack the source
-        run: mkdir unpack && tar -xzvf wsjtx-v2.5.4.tgz unpack/
+        run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-v2.5.4.tgz unpack/
 
       - name: Copy pattch
         run: pwd && ls -l && ls -l unpack/

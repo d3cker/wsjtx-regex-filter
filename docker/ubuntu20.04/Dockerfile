@@ -1,3 +1,3 @@
-FROM ubuntu:20.4
+FROM ubuntu:20.04
 
-RUN "Ubuntu 20.04 build"
+RUN echo "Ubuntu 20.04 build"

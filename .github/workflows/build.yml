@@ -17,77 +17,105 @@ jobs:
           name: wsjtx-source-code
           path: wsjtx-2.5.4.tgz
 
-  patch_source:
-    needs: ['download_wsjtx']
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Get source code
-        uses: actions/checkout@v2
-
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
           name: wsjtx-source-code
 
-      - name: Unpack the source
-        run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-2.5.4.tgz -C unpack/
-
-      - name: Prepare source
-        run: mkdir newsrc && tar -xzvf unpack/wsjtx-2.5.4/src/wsjtx.tgz -C newsrc/
-
-      - name: Patch WSJTX
-        run: cp -R patch/* newsrc/wsjtx/
-
-      - name: Repack source
-        run: cd newsrc/ && tar -czvf wsjtx.tgz * && cd ..
-
-      - name: Copy package
-        run: cp newsrc/wsjtx.tgz unpack/wsjtx-2.5.4/src/
-
-      - name: Generate md5sum
-        run: cd unpack/wsjtx-2.5.4/src/ && md5sum wsjtx.tgz > wsjtx.tgz.md5sum
-
-      - name: Create new archive
-        run: cd unpack/ && tar -czvf wsjtx-patched-2.5.4.tgz *
-
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
         with:
-          name: wsjtx-patched-code
-          path: unpack/wsjtx-patched-2.5.4.tgz
-
-
-  build_focal:
-    needs: ['patch_source']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get source code
-        uses: actions/checkout@v2
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+          draft: true
+          prerelease: true
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload darwin artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: wsjtx-patched-code
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: wsjtx-2.5.4.tgz
+          asset_name: wsjtx-2.5.4.tgz
+          asset_content_type: application/gzip
 
-      - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/ubuntu_focal && docker build . --tag ubuntu_focal_build
+#  patch_source:
+#    needs: ['download_wsjtx']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get source code
+#        uses: actions/checkout@v2
+#
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: wsjtx-source-code
+#
+#      - name: Unpack the source
+#        run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-2.5.4.tgz -C unpack/
+#
+#      - name: Prepare source
+#        run: mkdir newsrc && tar -xzvf unpack/wsjtx-2.5.4/src/wsjtx.tgz -C newsrc/
+#
+#      - name: Patch WSJTX
+#        run: cp -R patch/* newsrc/wsjtx/
+#
+#      - name: Repack source
+#        run: cd newsrc/ && tar -czvf wsjtx.tgz * && cd ..
+#
+#      - name: Copy package
+#        run: cp newsrc/wsjtx.tgz unpack/wsjtx-2.5.4/src/
+#
+#      - name: Generate md5sum
+#        run: cd unpack/wsjtx-2.5.4/src/ && md5sum wsjtx.tgz > wsjtx.tgz.md5sum
+#
+#      - name: Create new archive
+#        run: cd unpack/ && tar -czvf wsjtx-patched-2.5.4.tgz *
+#
+#      - name: Upload new patched archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wsjtx-patched-code
+#          path: unpack/wsjtx-patched-2.5.4.tgz
+#
 
-      - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
+#  build_focal:
+#    needs: ['patch_source']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get source code
+#        uses: actions/checkout@v2
+#
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: wsjtx-patched-code
+#
+#      - name: Create Docker Image
+#        run: cd $GITHUB_WORKSPACE/docker/ubuntu_focal && docker build . --tag ubuntu_focal_build
+#
+#      - name: Run Container
+#        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
+#
+#      - name: Upload new patched archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wsjtx-focal-package
+#          path: wsjtx_2.5.4_focal_amd64.deb
 
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsjtx-focal-package
-          path: wsjtx_2.5.4_focal_amd64.deb
-
-  clean_artifacts:
-    needs: ['build_focal']
-    runs-on: ubuntu-focal
-    steps:
-      - name: Delete Artifact
-        uses: GeekyEggo/delete-artifact@v1.0.0
-        with:
-          name: |
-            wsjtx-patched-code
-            wsjtx-source-code
+# clean_artifacts:
+#   needs: ['build_focal']
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Delete Artifact
+#       uses: GeekyEggo/delete-artifact@v1.0.0
+#       with:
+#         name: |
+#           wsjtx-patched-code
+#           wsjtx-source-code

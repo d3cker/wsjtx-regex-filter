@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-patched-code
-          path: upload/wsjtx-patched-2.5.4.tgz
+          path: unpack/wsjtx-patched-2.5.4.tgz
 
 
   build_focal:
@@ -66,7 +66,7 @@ jobs:
           name: wsjtx-patched-code
 
       - name: where am I
-        run: pwd && ls -l 
+        run: pwd && ls -l
 
 #      - name: Create Docker Image
 #        run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build

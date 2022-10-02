@@ -11,14 +11,11 @@ jobs:
       - name: Downlaod source code
         run: wget https://physics.princeton.edu/pulsar/k1jt/wsjtx-2.5.4.tgz
 
-      - name: where I am
-        run: pwd && ls -l
-
       - name: Save WSJTX for next jobs
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-source-code
-          path: ${{runner.workspace}}/wsjtx-2.5.4.tgz
+          path: ${{runner.workspace}}/wsjtx-regex/filter/wsjtx-2.5.4.tgz
 
   build_focal:
     needs: ['download_wsjtx']

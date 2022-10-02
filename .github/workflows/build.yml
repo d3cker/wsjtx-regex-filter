@@ -73,8 +73,9 @@ jobs:
       - name: where am I
         run: pwd && ls -l
 
-#      - name: Create Docker Image
-#        run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build
-#
-#      - name: Run Container
-#        run: docker run --name build -v $GITHUB_WORKSPACE:/tmp ubuntu_focal_build ps uax
+      - name: Create Docker Image
+        run: cd $GITHUB_WORKSPACE/docker/ubuntu20.04 && docker build . --tag ubuntu_focal_build
+
+      - name: Run Container
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
+

@@ -15,7 +15,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-source-code
-          path: ${{runner.workspace}}/wsjtx-regex/filter/wsjtx-2.5.4.tgz
+          path: ${{runner.workspace}}/wsjtx-regex-filter/wsjtx-2.5.4.tgz
 
   build_focal:
     needs: ['download_wsjtx']

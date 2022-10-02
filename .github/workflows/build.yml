@@ -15,7 +15,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-source-code
-          path: $GITHUB_WORKSPACE/wsjtx-2.5.4.tgz
+          path: wsjtx-2.5.4.tgz
 
   patch_source:
     needs: ['download_wsjtx']

@@ -187,15 +187,15 @@ jobs:
 #          asset_content_type: application/gzip
 #
 
-  clean_artifacts:
-    needs: ['release_draft']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete Artifact
-        uses: GeekyEggo/delete-artifact@v1.0.0
-        with:
-          name: |
-            wsjtx-patched-code
-            wsjtx-source-code
+#  clean_artifacts:
+#    needs: ['release_draft']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Delete Artifact
+#        uses: GeekyEggo/delete-artifact@v1.0.0
+#        with:
+#          name: |
+#            wsjtx-patched-code
+#            wsjtx-source-code
 #            wsjtx-focal-package
 #            wsjtx-jammy-package

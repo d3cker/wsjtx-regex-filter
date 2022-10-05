@@ -59,10 +59,9 @@ jobs:
           name: wsjtx-patched-code
           path: unpack/wsjtx-patched-2.5.4.tgz
 
-
-  build_focal:
-    needs: ['patch_source']
-    runs-on: ubuntu-latest
+  build_rpi32:
+    needs: ['patched_source']
+    runs-on: ARM
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -72,93 +71,121 @@ jobs:
         with:
           name: wsjtx-patched-code
 
-      - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/ubuntu_focal && docker build . --tag ubuntu_focal_build
+      - name: Prepare environment
+        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build && cd build
 
-      - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
+      - name: Prepare Makefile
+        run: cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
+      
+      - name: Compile binaray and create package
+        run: cmake --build . --target package
 
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsjtx-focal-package
-          path: wsjtx_2.5.4_focal_amd64.deb
-
-  build_jammy:
-    needs: ['patch_source']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get source code
-        uses: actions/checkout@v2
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: wsjtx-patched-code
-
-      - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/ubuntu_jammy && docker build . --tag ubuntu_jammy_build
-
-      - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_jammy_build /build/docker/ubuntu_jammy/build.sh
-
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsjtx-jammy-package
-          path: wsjtx_2.5.4_jammy_amd64.deb
+#      - name: Upload new patched archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wsjtx-focal-package
+#          path: wsjtx_2.5.4_focal_amd64.deb
 
 
-  release_draft:
-    needs: ['build_focal' , 'build_jammy']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+#  build_focal:
+#    needs: ['patch_source']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get source code
+#        uses: actions/checkout@v2
+#
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: wsjtx-patched-code
+#
+#      - name: Create Docker Image
+#        run: cd $GITHUB_WORKSPACE/docker/ubuntu_focal && docker build . --tag ubuntu_focal_build
+#
+#      - name: Run Container
+#        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
+#
+#      - name: Upload new patched archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wsjtx-focal-package
+#          path: wsjtx_2.5.4_focal_amd64.deb
+#
+#  build_jammy:
+#    needs: ['patch_source']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get source code
+#        uses: actions/checkout@v2
+#
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: wsjtx-patched-code
+#
+#      - name: Create Docker Image
+#        run: cd $GITHUB_WORKSPACE/docker/ubuntu_jammy && docker build . --tag ubuntu_jammy_build
+#
+#      - name: Run Container
+#        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_jammy_build /build/docker/ubuntu_jammy/build.sh
+#
+#      - name: Upload new patched archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wsjtx-jammy-package
+#          path: wsjtx_2.5.4_jammy_amd64.deb
+#
 
-      - name: Release draft
-        uses: actions/create-release@v1
-        id: create_release_draft
-        with:
-          draft: true
-          prerelease: true
-          release_name: Development build ${{ github.run_number }}
-          tag_name: ${{ github.ref }}
-          body: |
-            Automatic build on push. This is not a release.
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: upload focal artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-focal-package/wsjtx_2.5.4_focal_amd64.deb
-          asset_name: wsjtx_2.5.4_focal_amd64.deb
-          asset_content_type: application/gzip
-
-      - name: upload jammy artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
-          asset_name: wsjtx_2.5.4_jammy_amd64.deb
-          asset_content_type: application/gzip
-
-      - name: upload patched source code
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-patched-code/wsjtx-patched-2.5.4.tgz
-          asset_name: wsjtx-patched-2.5.4.tgz
-          asset_content_type: application/gzip
-
+#  release_draft:
+#    needs: ['build_focal' , 'build_jammy']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#
+#      - name: Release draft
+#        uses: actions/create-release@v1
+#        id: create_release_draft
+#        with:
+#          draft: true
+#          prerelease: true
+#          release_name: Development build ${{ github.run_number }}
+#          tag_name: ${{ github.ref }}
+#          body: |
+#            Automatic build on push. This is not a release.
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#
+#      - name: upload focal artifact
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+#          asset_path: wsjtx-focal-package/wsjtx_2.5.4_focal_amd64.deb
+#          asset_name: wsjtx_2.5.4_focal_amd64.deb
+#          asset_content_type: application/gzip
+#
+#      - name: upload jammy artifact
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+#          asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
+#          asset_name: wsjtx_2.5.4_jammy_amd64.deb
+#          asset_content_type: application/gzip
+#
+#      - name: upload patched source code
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+#          asset_path: wsjtx-patched-code/wsjtx-patched-2.5.4.tgz
+#          asset_name: wsjtx-patched-2.5.4.tgz
+#          asset_content_type: application/gzip
+#
 
   clean_artifacts:
     needs: ['release_draft']
@@ -170,5 +197,5 @@ jobs:
           name: |
             wsjtx-patched-code
             wsjtx-source-code
-            wsjtx-focal-package
-            wsjtx-jammy-package
+#            wsjtx-focal-package
+#            wsjtx-jammy-package

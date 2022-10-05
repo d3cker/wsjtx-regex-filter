@@ -60,7 +60,7 @@ jobs:
           path: unpack/wsjtx-patched-2.5.4.tgz
 
   build_rpi32:
-    needs: ['patched_source']
+    needs: ['patch_source']
     runs-on: ARM
     steps:
       - name: Get source code

@@ -72,13 +72,13 @@ jobs:
           name: wsjtx-patched-code
 
       - name: Prepare environment
-        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build && cd build
+        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build
 
       - name: Prepare Makefile
-        run: cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
+        run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
       
       - name: Compile binaray and create package
-        run: cmake --build . --target package -- -j3
+        run: cd build && cmake --build . --target package -- -j3
 
 #      - name: Upload new patched archive
 #        uses: actions/upload-artifact@v2

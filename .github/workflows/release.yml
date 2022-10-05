@@ -218,7 +218,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-rpi32-package/wsjtx_2.5.4_arm64.deb
+          asset_path: wsjtx-rpi64-package/wsjtx_2.5.4_arm64.deb
           asset_name: wsjtx_2.5.4_arm64.deb
           asset_content_type: application/gzip
 

@@ -80,11 +80,38 @@ jobs:
       - name: Compile binaray and create package
         run: cd build && cmake --build . --target package -- -j3
 
-#      - name: Upload new patched archive
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: wsjtx-focal-package
-#          path: wsjtx_2.5.4_focal_amd64.deb
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-rpi32-package
+          path: build/wsjtx-prefix/src/wsjtx-build/wsjtx_2.5.4_armhf.deb
+
+  build_rpi64:
+    needs: ['patch_source']
+    runs-on: ARM64
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: Prepare environment
+        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build
+
+      - name: Prepare Makefile
+        run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
+      
+      - name: Compile binaray and create package
+        run: cd build && cmake --build . --target package -- -j3
+
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-rpi64-package
+          path: build/wsjtx-prefix/src/wsjtx-build/wsjtx_2.5.4_arm64.deb
 
 
 #  build_focal:

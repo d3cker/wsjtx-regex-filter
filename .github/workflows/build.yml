@@ -76,7 +76,7 @@ jobs:
 
       - name: Prepare Makefile
         run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
-      
+
       - name: Compile binaray and create package
         run: cd build && cmake --build . --target package -- -j3
 
@@ -103,7 +103,7 @@ jobs:
 
       - name: Prepare Makefile
         run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
-      
+
       - name: Compile binaray and create package
         run: cd build && cmake --build . --target package -- -j3
 
@@ -161,8 +161,80 @@ jobs:
           name: wsjtx-jammy-package
           path: wsjtx_2.5.4_jammy_amd64.deb
 
+  build_buster:
+    needs: ['patch_source']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: Create Docker Image
+        run: cd $GITHUB_WORKSPACE/docker/debian_buster && docker build . --tag debian_buster_build
+
+      - name: Run Container
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_buster_build /build/docker/debian_buster/build.sh
+
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-buster-package
+          path: wsjtx_2.5.4_buster_amd64.deb
+
+  build_bullseye:
+    needs: ['patch_source']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: Create Docker Image
+        run: cd $GITHUB_WORKSPACE/docker/debian_bullseye && docker build . --tag debian_bullseye_build
+
+      - name: Run Container
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_bullseye_build /build/docker/debian_bullseye/build.sh
+
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-bullseye-package
+          path: wsjtx_2.5.4_bullseye_amd64.deb
+
+  build_fedora36:
+    needs: ['patch_source']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: Create Docker Image
+        run: cd $GITHUB_WORKSPACE/docker/fedora_36 && docker build . --tag fedora_36_build
+
+      - name: Run Container
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build fedora_36_build /build/docker/fedora_36/build.sh
+
+      - name: Upload new patched archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-fedora36-package
+          path: wsjtx-2.5.4.fc36.x86_64.rpm
+
   release_draft:
-    needs: ['build_focal' , 'build_jammy' , 'build_rpi32' , 'build_rpi64']
+    needs: ['build_focal' , 'build_jammy' , 'build_rpi32' , 'build_rpi64' , 'build_buster' , 'build_bullseye' , 'build_fedora36']
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
@@ -199,6 +271,36 @@ jobs:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
           asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
           asset_name: wsjtx_2.5.4_jammy_amd64.deb
+          asset_content_type: application/gzip
+
+      - name: upload buster artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-buster-package/wsjtx_2.5.4_buster_amd64.deb
+          asset_name: wsjtx_2.5.4_buster_amd64.deb
+          asset_content_type: application/gzip
+
+      - name: upload bullseye artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-bullseye-package/wsjtx_2.5.4_bullseye_amd64.deb
+          asset_name: wsjtx_2.5.4_bullseye_amd64.deb
+          asset_content_type: application/gzip
+
+      - name: upload fedora36 artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-fedora36-package/wsjtx-2.5.4.fc36.x86_64.rpm
+          asset_name: wsjtx-2.5.4.fc36.x86_64.rpm
           asset_content_type: application/gzip
 
       - name: upload rpi32 artifact
@@ -243,5 +345,8 @@ jobs:
             wsjtx-source-code
             wsjtx-focal-package
             wsjtx-jammy-package
+            wsjtx-buster-package
+            wsjtx-bullseye-package
+            wsjtx-fedora36-package
             wsjtx-rpi32-package
             wsjtx-rpi64-package

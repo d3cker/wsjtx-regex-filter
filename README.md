@@ -7,23 +7,35 @@ Navigate to [GitHub Actions](https://github.com/d3cker/wsjtx-regex-filter/action
 [Available releases](https://github.com/d3cker/wsjtx-regex-filter/releases):
 - Ubuntu Focal 20.04
 - Ubuntu Jammy 22.04
+- Debian Buster 10
+- Debian Bullseye 11
+- Fedora 36
 - ARM (Raspbian) 64bit
-- ARM (Raspbian) 32bit 
-- Patched source code tgz archive
+- ARM (Raspbian) 32bit
+- Patched source code .tgz archive
 
-If you want to compile this patch by your own, just grab patched source code from 
-[Releases](https://github.com/d3cker/wsjtx-regex-filter/releases) page and follow
-original INSTALL instructions.
+You may need to remove `wsjtx`, `wsjtx-doc` and `wsjtx-data` before installing
+a release package.
 
-Short version for Ubuntu/Raspbian build:
-- Install dependencies
+If you want to compile this patch by your own try this instructions:
+
+- Install dependencies (Ubuntu/Debian/Raspbian)
 ```
 sudo apt-get update 
 sudo apt-get install -y gcc g++ clang gfortran cmake git asciidoc texinfo\
-qtmultimedia5-dev libqt5serialport5-dev qttools5-dev qttools5-dev-tools\
-libboost-all-dev libfftw3-dev libreadline-dev libusb-1.0-0-dev libudev-dev\
-portaudio19-dev build-essential binutils lintian debhelper dh-make devscripts
+ qtmultimedia5-dev libqt5serialport5-dev qttools5-dev qttools5-dev-tools\
+ libboost-all-dev libfftw3-dev libreadline-dev libusb-1.0-0-dev libudev-dev\
+ portaudio19-dev build-essential binutils lintian debhelper dh-make devscripts
 ```
+
+- Install dependencies (Fedora)
+```
+sudo dnf install libgfortran fftw-libs-single qt5-qtbase\
+ qt5-qtmultimedia qt5-qtserialport qt5-qtsvg\
+ qt5-qtserialport libgomp boost libusbx portaudio
+```
+
+- Download `wsjtx-patched-2.5.4.tgz` from [Releases](https://github.com/d3cker/wsjtx-regex-filter/releases)
 
 - Build package
 ```
@@ -33,6 +45,8 @@ cd build
 cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
 cmake --build . --target package
 ```
+
+You may add `-- -j<number_of_threads>` to speed up build process.
 
 ## Features
 - Added option: Setup -> RX/TX Macros -> RX regex ignore filter

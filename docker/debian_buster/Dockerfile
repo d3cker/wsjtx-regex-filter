@@ -1,11 +1,8 @@
-FROM fedora:36
+FROM debian:10
 
-RUN dnf install -y qt5-qtmultimedia-devel qt5-qtserialport-devel  qt5-linguist\
-    boost-devel fftw-devel readline-devel systemd-devel libusb-devel\
-    portaudio-devel patch gcc g++ gfortran cmake git asciidoc texinfo\
-    rpmdevtools rpmlint
-
-
-
-
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -y gcc\
+    g++ clang gfortran cmake git asciidoc texinfo qtmultimedia5-dev\
+    libqt5serialport5-dev qttools5-dev qttools5-dev-tools libboost-all-dev\
+    libfftw3-dev libreadline-dev libusb-1.0-0-dev libudev-dev portaudio19-dev\
+    build-essential binutils lintian debhelper dh-make devscripts
 

@@ -1,5 +1,11 @@
 FROM fedora:36
 
-RUN sudo dnf install libgfortran fftw-libs-single qt5-qtbase \
-     qt5-qtmultimedia qt5-qtserialport qt5-qtsvg \
-     qt5-qtserialport libgomp boost libusbx portaudio
+RUN dnf install -y qt5-qtmultimedia-devel qt5-qtserialport-devel  qt5-linguist\
+    boost-devel fftw-devel readline-devel systemd-devel libusb-devel\
+    portaudio-devel patch gcc g++ gfortran cmake git asciidoc texinfo\
+    rpmdevtools rpmlint
+
+
+
+
+

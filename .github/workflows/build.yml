@@ -234,7 +234,7 @@ jobs:
           path: wsjtx-2.5.4.fc36.x86_64.rpm
 
   release_draft:
-    needs: ['build_focal' , 'build_jammy' , 'build_rpi32' , 'build_rpi64' , 'build_buster' , 'build_bullseye' , 'build_feodra36']
+    needs: ['build_focal' , 'build_jammy' , 'build_rpi32' , 'build_rpi64' , 'build_buster' , 'build_bullseye' , 'build_fedora36']
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts

@@ -68,6 +68,10 @@ jobs:
     needs: ['patch_source']
     runs-on: [ self-hosted , Windows , X64 ]
     steps:
+      - name: powershell allow...
+        shell: cmd
+        run: powershell -Command "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
+
       - name: Get source code
         uses: actions/checkout@v2
 

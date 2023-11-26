@@ -19,7 +19,6 @@ jobs:
           name: wsjtx-source-code
           path: wsjtx-2.6.1.tgz
 
-
   patch_source:
     needs: ['download_wsjtx']
     runs-on: ubuntu-latest
@@ -213,7 +212,6 @@ jobs:
         with:
           name: wsjtx-windows-package
           path: C:\JTSDK64-Tools\tmp\wsjtx-output\qt\5.15.2\2.6.1\Release\package\wsjtx-2.6.1-win64.exe
-
 
   release_draft:
     needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39' , 'build_windows' ]

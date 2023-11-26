@@ -174,8 +174,49 @@ jobs:
           name: wsjtx-fedora39-package
           path: wsjtx-2.6.1.fc39.x86_64.rpm
 
+  build_windows:
+    needs: ['patch_source']
+    runs-on: [ self-hosted , Windows , X64 ]
+    steps:
+      - name: Update execution policy
+        shell: cmd
+        run: powershell -Command "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
+
+      - name: Clear old builds outside workspace
+        run: |
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx-output\") { rm C:\JTSDK64-Tools\tmp\wsjtx-output\ -r }
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx\") { rm C:\JTSDK64-Tools\tmp\wsjtx\ -r }
+
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wsjtx-patched-code
+
+      - name: Unpack and prepare to compile
+        run: |
+            tar -xzvf .\wsjtx-patched-2.6.1.tgz
+            tar -xzvf .\wsjtx-2.6.1\src\wsjtx.tgz -C C:\JTSDK64-Tools\tmp\
+
+      - name: Check workspace
+        run: dir C:\JTSDK64-Tools\tmp\
+
+      - name: Check for JTSDK
+        run: |
+            cd c:\JTSDK64-Tools
+            powershell -ExecutionPolicy Bypass -File .\jtsdk64_test.ps1
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-windows-package
+          path: C:\JTSDK64-Tools\tmp\wsjtx-output\qt\5.15.2\2.6.1\Release\package\wsjtx-2.6.1-win64.exe
+
+
   release_draft:
-    needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39']
+    needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39' , 'build_windows' ]
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
@@ -234,6 +275,16 @@ jobs:
           asset_name: wsjtx_2.6.1_arm64.deb
           asset_content_type: application/gzip
 
+      - name: upload windows build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-windows-package/wsjtx-2.6.1-win64.exe
+          asset_name: wsjtx-2.6.1-win64.exe
+          asset_content_type: application/octet-stream
+
       - name: upload patched source code
         uses: actions/upload-release-asset@v1
         env:
@@ -258,3 +309,4 @@ jobs:
             wsjtx-bookworm-package
             wsjtx-fedora39-package
             wsjtx-rpi64-package
+            wsjtx-windows-package

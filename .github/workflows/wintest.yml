@@ -8,7 +8,7 @@ on:
 
 jobs:
   download_wsjtx:
-    runs-on: [ self-hosted , Linux , X64 ]
+    runs-on: ubuntu-local
     steps:
       - name: Downlaod source code
         run: wget https://wsjt.sourceforge.io/downloads/wsjtx-2.6.1.tgz
@@ -22,7 +22,7 @@ jobs:
 
   patch_source:
     needs: ['download_wsjtx']
-    runs-on: [ self-hosted , Linux , X64 ]
+    runs-on: ubuntu-local
     steps:
       - name: Get source code
         uses: actions/checkout@v2

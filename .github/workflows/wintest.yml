@@ -63,9 +63,10 @@ jobs:
           name: wsjtx-patched-code
           path: unpack/wsjtx-patched-2.6.1.tgz
 
-  build_rpi64:
+
+  build_windows:
     needs: ['patch_source']
-    runs-on: [ self-hosted , Linux , ARM64 ]
+    runs-on: [ self-hosted , Windows , X64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -83,8 +84,9 @@ jobs:
             cd c:\JTSDK64-Tools
             powershell -ExecutionPolicy Bypass -File .\jtsdk64_test.ps1
 
+
   clean_artifacts:
-    needs: ['release_draft']
+#    needs: ['release_draft']
     runs-on: ubuntu-latest
     steps:
       - name: Delete Artifact
@@ -93,4 +95,3 @@ jobs:
           name: |
             wsjtx-patched-code
             wsjtx-source-code
-            wsjtx-focal-package

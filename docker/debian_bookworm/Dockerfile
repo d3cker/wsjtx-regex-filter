@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:12
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -y gcc\
     g++ clang gfortran cmake git asciidoc texinfo qtmultimedia5-dev\

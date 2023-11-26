@@ -135,16 +135,16 @@ jobs:
           name: wsjtx-patched-code
 
       - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/debian_bullseye && docker build . --tag debian_bullseye_build
+        run: cd $GITHUB_WORKSPACE/docker/debian_bookworm && docker build . --tag debian_bookworm_build
 
       - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_bullseye_build /build/docker/debian_bullseye/build.sh
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_bookworm_build /build/docker/debian_bookworm/build.sh
 
       - name: Upload new patched archive
         uses: actions/upload-artifact@v2
         with:
-          name: wsjtx-bullseye-package
-          path: wsjtx_2.6.1_bullseye_amd64.deb
+          name: wsjtx-bookworm-package
+          path: wsjtx_2.6.1_bookworm_amd64.deb
 
   build_fedora39:
     needs: ['patch_source']
@@ -178,7 +178,6 @@ jobs:
     needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39']
     runs-on: ubuntu-latest
     steps:
-
       - name: Download artifacts
         uses: actions/download-artifact@v2
 

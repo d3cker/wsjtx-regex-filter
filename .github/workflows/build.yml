@@ -11,19 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Downlaod source code
-        run: wget https://physics.princeton.edu/pulsar/k1jt/wsjtx-2.5.4.tgz
+        run: wget https://wsjt.sourceforge.io/downloads/wsjtx-2.6.1.tgz
 
       - name: Save WSJTX for next jobs
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-source-code
-          path: wsjtx-2.5.4.tgz
-
+          path: wsjtx-2.6.1.tgz
 
   patch_source:
     needs: ['download_wsjtx']
     runs-on: ubuntu-latest
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -33,10 +36,10 @@ jobs:
           name: wsjtx-source-code
 
       - name: Unpack the source
-        run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-2.5.4.tgz -C unpack/
+        run: mkdir unpack && pwd && ls -l && tar -xzvf wsjtx-2.6.1.tgz -C unpack/
 
       - name: Prepare source
-        run: mkdir newsrc && tar -xzvf unpack/wsjtx-2.5.4/src/wsjtx.tgz -C newsrc/
+        run: mkdir newsrc && tar -xzvf unpack/wsjtx-2.6.1/src/wsjtx.tgz -C newsrc/
 
       - name: Patch WSJTX
         run: cp -R patch/* newsrc/wsjtx/
@@ -45,50 +48,23 @@ jobs:
         run: cd newsrc/ && tar -czvf wsjtx.tgz * && cd ..
 
       - name: Copy package
-        run: cp newsrc/wsjtx.tgz unpack/wsjtx-2.5.4/src/
+        run: cp newsrc/wsjtx.tgz unpack/wsjtx-2.6.1/src/
 
       - name: Generate md5sum
-        run: cd unpack/wsjtx-2.5.4/src/ && md5sum wsjtx.tgz > wsjtx.tgz.md5sum
+        run: cd unpack/wsjtx-2.6.1/src/ && md5sum wsjtx.tgz > wsjtx.tgz.md5sum
 
       - name: Create new archive
-        run: cd unpack/ && tar -czvf wsjtx-patched-2.5.4.tgz *
+        run: cd unpack/ && tar -czvf wsjtx-patched-2.6.1.tgz *
 
       - name: Upload new patched archive
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-patched-code
-          path: unpack/wsjtx-patched-2.5.4.tgz
-
-  build_rpi32:
-    needs: ['patch_source']
-    runs-on: ARM
-    steps:
-      - name: Get source code
-        uses: actions/checkout@v2
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: wsjtx-patched-code
-
-      - name: Prepare environment
-        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build
-
-      - name: Prepare Makefile
-        run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
-
-      - name: Compile binaray and create package
-        run: cd build && cmake --build . --target package -- -j3
-
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsjtx-rpi32-package
-          path: build/wsjtx-prefix/src/wsjtx-build/wsjtx_2.5.4_armhf.deb
+          path: unpack/wsjtx-patched-2.6.1.tgz
 
   build_rpi64:
     needs: ['patch_source']
-    runs-on: ARM64
+    runs-on: [ self-hosted , Linux , ARM64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -99,10 +75,10 @@ jobs:
           name: wsjtx-patched-code
 
       - name: Prepare environment
-        run: tar -xzvf wsjtx-patched-2.5.4.tgz && mkdir build
+        run: tar -xzvf wsjtx-patched-2.6.1.tgz && mkdir build
 
       - name: Prepare Makefile
-        run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
+        run: cd build && cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.6.1
 
       - name: Compile binaray and create package
         run: cd build && cmake --build . --target package -- -j3
@@ -111,36 +87,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-rpi64-package
-          path: build/wsjtx-prefix/src/wsjtx-build/wsjtx_2.5.4_arm64.deb
-
-  build_focal:
-    needs: ['patch_source']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get source code
-        uses: actions/checkout@v2
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: wsjtx-patched-code
-
-      - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/ubuntu_focal && docker build . --tag ubuntu_focal_build
-
-      - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build ubuntu_focal_build /build/docker/ubuntu_focal/build.sh
-
-      - name: Upload new patched archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsjtx-focal-package
-          path: wsjtx_2.5.4_focal_amd64.deb
+          path: build/wsjtx-prefix/src/wsjtx-build/wsjtx_2.6.1_arm64.deb
 
   build_jammy:
     needs: ['patch_source']
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -159,12 +115,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wsjtx-jammy-package
-          path: wsjtx_2.5.4_jammy_amd64.deb
+          path: wsjtx_2.6.1_jammy_amd64.deb
 
-  build_buster:
+  build_bookworm:
     needs: ['patch_source']
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -174,21 +134,25 @@ jobs:
           name: wsjtx-patched-code
 
       - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/debian_buster && docker build . --tag debian_buster_build
+        run: cd $GITHUB_WORKSPACE/docker/debian_bookworm && docker build . --tag debian_bookworm_build
 
       - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_buster_build /build/docker/debian_buster/build.sh
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_bookworm_build /build/docker/debian_bookworm/build.sh
 
       - name: Upload new patched archive
         uses: actions/upload-artifact@v2
         with:
-          name: wsjtx-buster-package
-          path: wsjtx_2.5.4_buster_amd64.deb
+          name: wsjtx-bookworm-package
+          path: wsjtx_2.6.1_bookworm_amd64.deb
 
-  build_bullseye:
+  build_fedora39:
     needs: ['patch_source']
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -198,21 +162,30 @@ jobs:
           name: wsjtx-patched-code
 
       - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/debian_bullseye && docker build . --tag debian_bullseye_build
+        run: cd $GITHUB_WORKSPACE/docker/fedora_39 && docker build . --tag fedora_39_build
 
       - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build debian_bullseye_build /build/docker/debian_bullseye/build.sh
+        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build fedora_39_build /build/docker/fedora_39/build.sh
 
       - name: Upload new patched archive
         uses: actions/upload-artifact@v2
         with:
-          name: wsjtx-bullseye-package
-          path: wsjtx_2.5.4_bullseye_amd64.deb
+          name: wsjtx-fedora39-package
+          path: wsjtx-2.6.1.fc39.x86_64.rpm
 
-  build_fedora36:
+  build_windows:
     needs: ['patch_source']
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted , Windows , X64 ]
     steps:
+      - name: Update execution policy
+        shell: cmd
+        run: powershell -Command "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
+
+      - name: Clear old builds outside workspace
+        run: |
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx-output\") { rm C:\JTSDK64-Tools\tmp\wsjtx-output\ -r }
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx\") { rm C:\JTSDK64-Tools\tmp\wsjtx\ -r }
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -221,20 +194,27 @@ jobs:
         with:
           name: wsjtx-patched-code
 
-      - name: Create Docker Image
-        run: cd $GITHUB_WORKSPACE/docker/fedora_36 && docker build . --tag fedora_36_build
+      - name: Unpack and prepare to compile
+        run: |
+            tar -xzvf .\wsjtx-patched-2.6.1.tgz
+            tar -xzvf .\wsjtx-2.6.1\src\wsjtx.tgz -C C:\JTSDK64-Tools\tmp\
 
-      - name: Run Container
-        run: docker run -t -v $GITHUB_WORKSPACE:/build -w /build fedora_36_build /build/docker/fedora_36/build.sh
+      - name: Check workspace
+        run: dir C:\JTSDK64-Tools\tmp\
 
-      - name: Upload new patched archive
+      - name: Check for JTSDK
+        run: |
+            cd c:\JTSDK64-Tools
+            powershell -ExecutionPolicy Bypass -File .\jtsdk64_test.ps1
+
+      - name: Upload Windows package
         uses: actions/upload-artifact@v2
         with:
-          name: wsjtx-fedora36-package
-          path: wsjtx-2.5.4.fc36.x86_64.rpm
+          name: wsjtx-windows-package
+          path: C:\JTSDK64-Tools\tmp\wsjtx-output\qt\5.15.2\2.6.1\Release\package\wsjtx-2.6.1-win64.exe
 
   release_draft:
-    needs: ['build_focal' , 'build_jammy' , 'build_rpi32' , 'build_rpi64' , 'build_buster' , 'build_bullseye' , 'build_fedora36']
+    needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39' , 'build_windows' ]
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
@@ -253,64 +233,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: upload focal artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-focal-package/wsjtx_2.5.4_focal_amd64.deb
-          asset_name: wsjtx_2.5.4_focal_amd64.deb
-          asset_content_type: application/gzip
-
       - name: upload jammy artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
-          asset_name: wsjtx_2.5.4_jammy_amd64.deb
+          asset_path: wsjtx-jammy-package/wsjtx_2.6.1_jammy_amd64.deb
+          asset_name: wsjtx_2.6.1_jammy_amd64.deb
           asset_content_type: application/gzip
 
-      - name: upload buster artifact
+      - name: upload bookworm artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-buster-package/wsjtx_2.5.4_buster_amd64.deb
-          asset_name: wsjtx_2.5.4_buster_amd64.deb
+          asset_path: wsjtx-bookworm-package/wsjtx_2.6.1_bookworm_amd64.deb
+          asset_name: wsjtx_2.6.1_bookworm_amd64.deb
           asset_content_type: application/gzip
 
-      - name: upload bullseye artifact
+      - name: upload fedora39 artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-bullseye-package/wsjtx_2.5.4_bullseye_amd64.deb
-          asset_name: wsjtx_2.5.4_bullseye_amd64.deb
-          asset_content_type: application/gzip
-
-      - name: upload fedora36 artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-fedora36-package/wsjtx-2.5.4.fc36.x86_64.rpm
-          asset_name: wsjtx-2.5.4.fc36.x86_64.rpm
-          asset_content_type: application/gzip
-
-      - name: upload rpi32 artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-rpi32-package/wsjtx_2.5.4_armhf.deb
-          asset_name: wsjtx_2.5.4_armhf.deb
+          asset_path: wsjtx-fedora39-package/wsjtx-2.6.1.fc39.x86_64.rpm
+          asset_name: wsjtx-2.6.1.fc39.x86_64.rpm
           asset_content_type: application/gzip
 
       - name: upload rpi64 artifact
@@ -319,9 +269,19 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-rpi64-package/wsjtx_2.5.4_arm64.deb
-          asset_name: wsjtx_2.5.4_arm64.deb
+          asset_path: wsjtx-rpi64-package/wsjtx_2.6.1_arm64.deb
+          asset_name: wsjtx_2.6.1_arm64.deb
           asset_content_type: application/gzip
+
+      - name: upload windows build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
+          asset_path: wsjtx-windows-package/wsjtx-2.6.1-win64.exe
+          asset_name: wsjtx-2.6.1-win64.exe
+          asset_content_type: application/octet-stream
 
       - name: upload patched source code
         uses: actions/upload-release-asset@v1
@@ -329,8 +289,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-patched-code/wsjtx-patched-2.5.4.tgz
-          asset_name: wsjtx-patched-2.5.4.tgz
+          asset_path: wsjtx-patched-code/wsjtx-patched-2.6.1.tgz
+          asset_name: wsjtx-patched-2.6.1.tgz
           asset_content_type: application/gzip
 
   clean_artifacts:
@@ -343,10 +303,8 @@ jobs:
           name: |
             wsjtx-patched-code
             wsjtx-source-code
-            wsjtx-focal-package
             wsjtx-jammy-package
-            wsjtx-buster-package
-            wsjtx-bullseye-package
-            wsjtx-fedora36-package
-            wsjtx-rpi32-package
+            wsjtx-bookworm-package
+            wsjtx-fedora39-package
             wsjtx-rpi64-package
+            wsjtx-windows-package

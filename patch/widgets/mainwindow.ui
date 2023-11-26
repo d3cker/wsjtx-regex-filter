@@ -2,6 +2,20 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>880</width>
+    <height>685</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>750</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>WSJT-X   by K1JT</string>
   </property>
@@ -28,7 +42,6 @@
           <property name="font">
            <font>
             <pointsize>10</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -172,7 +185,6 @@
           <property name="font">
            <font>
             <pointsize>10</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -318,7 +330,7 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,2,2,2,2,2,2,2,2,2,1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,2,2,2,2,2,0,2,2,2,2,1">
          <item>
           <widget class="QCheckBox" name="cbCQonly">
            <property name="text">
@@ -424,6 +436,22 @@
            </property>
            <property name="text">
             <string>Clear Avg</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="HintedSpinBox" name="sbEchoAvg">
+           <property name="prefix">
+            <string>Avg </string>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>10</number>
            </property>
           </widget>
          </item>
@@ -552,85 +580,8 @@
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout_5" rowstretch="1,0,0" columnstretch="0,0,1,4,0">
-         <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QPushButton" name="readFreq">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If orange or red there has been a rig control failure, click to reset and read the dial frequency.  S implies split mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="accessibleDescription">
-            <string>If orange or red there has been a rig control failure, click to reset and read the dial frequency. S implies split mode.</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
- font-family: helvetica;
- font-size: 9pt;
- font-weight: bold;
- background-color: white;
- color: black;
- border-style: solid;
- border-width:1px;
- border-radius:10px;
- border-color: gray;
- max-width:20px;
- max-height:20px;
- min-width:20px;
- min-height:20px;
-}
-QPushButton[state=&quot;error&quot;] {
- background-color: red;
-}
-QPushButton[state=&quot;warning&quot;] {
- background-color: orange;
-}
-QPushButton[state=&quot;ok&quot;] {
- background-color: #00ff00;
-}</string>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string> Pwr</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4" rowspan="2">
-          <widget class="QSlider" name="outAttenuation">
-           <property name="toolTip">
-            <string>Adjust Tx audio level</string>
-           </property>
-           <property name="maximum">
-            <number>450</number>
-           </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="invertedAppearance">
-            <bool>true</bool>
-           </property>
-           <property name="invertedControls">
-            <bool>true</bool>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TicksBelow</enum>
-           </property>
-           <property name="tickInterval">
-            <number>50</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="2">
+        <layout class="QGridLayout" name="gridLayout_5" rowstretch="1,0,0" columnstretch="0,0,0,0,1,1,5,0">
+         <item row="1" column="4" colspan="2">
           <widget class="QWidget" name="DX_controls_widget" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -907,79 +858,140 @@ QPushButton[state=&quot;ok&quot;] {
            </layout>
           </widget>
          </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLabel" name="labUTC">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item row="1" column="7" rowspan="2">
+          <widget class="QSlider" name="outAttenuation">
+           <property name="toolTip">
+            <string>Adjust Tx audio level</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-  font-family: MS Shell Dlg 2;
-  font-size: 16pt;
-  background-color : black;
-  color : yellow;
-}</string>
+           <property name="maximum">
+            <number>450</number>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Sunken</enum>
-           </property>
-           <property name="lineWidth">
-            <number>2</number>
-           </property>
-           <property name="midLineWidth">
+           <property name="value">
             <number>0</number>
            </property>
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt; 2015 Jun 17 &lt;/p&gt;&lt;p align=&quot;center&quot;&gt; 01:23:45 &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+           <property name="invertedAppearance">
+            <bool>true</bool>
            </property>
-           <property name="margin">
-            <number>5</number>
+           <property name="invertedControls">
+            <bool>true</bool>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="labDialFreq">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
            </property>
-           <property name="toolTip">
-            <string>USB dial frequency</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-  font-family: MS Shell Dlg 2;
-  font-size: 16pt;
-   color : yellow;
-   background-color : black;
-}
-QLabel[oob=&quot;true&quot;] {
-  background-color: red;
-}</string>
-           </property>
-           <property name="text">
-            <string>14.078 000</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="margin">
-            <number>5</number>
+           <property name="tickInterval">
+            <number>50</number>
            </property>
           </widget>
          </item>
-         <item row="0" column="3" rowspan="3">
+         <item row="0" column="7">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string> Pwr</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2" rowspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QSpinBox" name="sbNB">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="suffix">
+              <string>  %</string>
+             </property>
+             <property name="prefix">
+              <string>NB  </string>
+             </property>
+             <property name="minimum">
+              <number>-2</number>
+             </property>
+             <property name="maximum">
+              <number>25</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="SignalMeter" name="signal_meter_widget">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;30dB recommended when only noise present&lt;br/&gt;Green when good&lt;br/&gt;Red when clipping may occur&lt;br/&gt;Yellow when too low&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="accessibleName">
+                <string>Rx Signal</string>
+               </property>
+               <property name="accessibleDescription">
+                <string>30dB recommended when only noise present
+Green when good
+Red when clipping may occur
+Yellow when too low</string>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="6" rowspan="3">
           <widget class="QStackedWidget" name="controls_stack_widget">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -1012,7 +1024,7 @@ QLabel[oob=&quot;true&quot;] {
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,1">
+               <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,2">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -1204,20 +1216,21 @@ When not checked you can view the calibration results.</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="cbFirst">
+                     <widget class="QComboBox" name="respondComboBox">
                       <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to call the first decoded responder to my CQ.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-weight:600;&quot;&gt;CQ: First&lt;/span&gt; to respond automatically to the first decoded reply to your CQ. &lt;/p&gt;&lt;p&gt;Select &lt;span style=&quot; font-weight:600;&quot;&gt;CQ: Max Dist&lt;/span&gt; to respond automatically to the reply yielding most points in the ARRL International Digital Contest.&lt;/p&gt;&lt;p&gt;Select &lt;span style=&quot; font-weight:600;&quot;&gt;CQ: None&lt;/span&gt; to choose callers manually.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
-                      <property name="accessibleDescription">
-                       <string>Check to call the first decoded responder to my CQ.</string>
+                      <property name="currentText">
+                       <string/>
                       </property>
-                      <property name="text">
-                       <string>Call 1st</string>
+                      <property name="currentIndex">
+                       <number>-1</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>3</number>
                       </property>
                      </widget>
                     </item>
-
-
                     <item>
                      <widget class="QCheckBox" name="cbTx6">
                       <property name="enabled">
@@ -1282,6 +1295,9 @@ When not checked you can view the calibration results.</string>
                     </item>
                    </layout>
                   </item>
+
+
+
                   <item row="0" column="0">
                    <layout class="QVBoxLayout" name="verticalLayout_14">
                     <item>
@@ -1496,7 +1512,7 @@ When not checked you can view the calibration results.</string>
                     <item>
                      <widget class="QStackedWidget" name="opt_controls_stack">
                       <property name="currentIndex">
-                       <number>0</number>
+                       <number>1</number>
                       </property>
                       <widget class="QWidget" name="page_0">
                        <layout class="QVBoxLayout" name="verticalLayout">
@@ -2016,9 +2032,6 @@ list. The list can be maintained in Settings (F2).</string>
                         <property name="insertPolicy">
                          <enum>QComboBox::InsertAtBottom</enum>
                         </property>
-                        <property name="sizeAdjustPolicy">
-                         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-                        </property>
                        </widget>
                       </item>
                       <item row="5" column="1">
@@ -2049,11 +2062,32 @@ Double-click to reset to the standard 73 message</string>
                    <attribute name="title">
                     <string>2</string>
                    </attribute>
-                   <layout class="QGridLayout" name="gridLayout_11" columnstretch="1,0">
-                    <item row="0" column="1" rowspan="2">
-                     <layout class="QGridLayout" name="gridLayout_10">
-                      <item row="2" column="0">
-                       <widget class="QSpinBox" name="sbMax_dB">
+                   <layout class="QGridLayout" name="gridLayout_11" columnstretch="1">
+                    <property name="leftMargin">
+                     <number>4</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>4</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>4</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>4</number>
+                    </property>
+                    <property name="horizontalSpacing">
+                     <number>4</number>
+                    </property>
+                    <item row="0" column="0" rowspan="2">
+                     <layout class="QGridLayout" name="gridLayout" columnstretch="2,2,1">
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="horizontalSpacing">
+                       <number>6</number>
+                      </property>
+                      <item row="1" column="2">
+                       <widget class="QComboBox" name="comboBoxHoundSort">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -2066,21 +2100,62 @@ Double-click to reset to the standard 73 message</string>
                           <height>16777215</height>
                          </size>
                         </property>
-                        <property name="prefix">
-                         <string>Max dB  </string>
+                        <property name="currentText">
+                         <string>Random</string>
                         </property>
-                        <property name="minimum">
-                         <number>-15</number>
+                        <property name="maxVisibleItems">
+                         <number>5</number>
                         </property>
-                        <property name="maximum">
-                         <number>70</number>
+                        <item>
+                         <property name="text">
+                          <string>Random</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Call</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Grid</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>S/N (dB)</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Distance</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_queue">
+                        <property name="font">
+                         <font>
+                          <pointsize>9</pointsize>
+                         </font>
                         </property>
-                        <property name="value">
-                         <number>30</number>
+                        <property name="text">
+                         <string>Queue</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
                         </property>
                        </widget>
                       </item>
-                      <item row="4" column="0">
+                      <item row="6" column="2">
+                       <widget class="QCheckBox" name="cbMoreCQs">
+                        <property name="text">
+                         <string>More CQs</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="2">
                        <widget class="QComboBox" name="comboBoxCQ">
                         <property name="currentText">
                          <string>CQ</string>
@@ -2177,14 +2252,7 @@ Double-click to reset to the standard 73 message</string>
                         </item>
                        </widget>
                       </item>
-                      <item row="6" column="0">
-                       <widget class="QPushButton" name="pbFoxReset">
-                        <property name="text">
-                         <string>Reset</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
+                      <item row="2" column="2">
                        <widget class="QSpinBox" name="sbNlist">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2212,7 +2280,35 @@ Double-click to reset to the standard 73 message</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="3" column="0">
+                      <item row="3" column="2">
+                       <widget class="QSpinBox" name="sbMax_dB">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="prefix">
+                         <string>Max dB  </string>
+                        </property>
+                        <property name="minimum">
+                         <number>-15</number>
+                        </property>
+                        <property name="maximum">
+                         <number>70</number>
+                        </property>
+                        <property name="value">
+                         <number>30</number>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="2">
                        <widget class="QSpinBox" name="sbNslots">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2246,54 +2342,24 @@ Double-click to reset to the standard 73 message</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="0" column="0">
-                       <widget class="QComboBox" name="comboBoxHoundSort">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
+                      <item row="7" column="2">
+                       <widget class="QPushButton" name="pbFoxReset">
+                        <property name="text">
+                         <string>Reset</string>
                         </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>16777215</height>
-                         </size>
-                        </property>
-                        <property name="currentText">
-                         <string>Random</string>
-                        </property>
-                        <property name="maxVisibleItems">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>Random</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>Call</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>Grid</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>S/N (dB)</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>Distance</string>
-                         </property>
-                        </item>
                        </widget>
                       </item>
-                      <item row="7" column="0">
+                      <item row="0" column="1">
+                       <widget class="QLabel" name="label_inProcess">
+                        <property name="text">
+                         <string>In Progress</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="8" column="2">
                        <spacer name="verticalSpacer">
                         <property name="orientation">
                          <enum>Qt::Vertical</enum>
@@ -2306,33 +2372,48 @@ Double-click to reset to the standard 73 message</string>
                         </property>
                        </spacer>
                       </item>
-                      <item row="5" column="0">
-                       <widget class="QCheckBox" name="cbMoreCQs">
-                        <property name="text">
-                         <string>More CQs</string>
+                      <item row="1" column="1" rowspan="8">
+                       <widget class="DisplayText" name="foxTxListTextBrowser">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0" rowspan="8">
+                       <widget class="DisplayText" name="houndQueueTextBrowser">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
                         </property>
                        </widget>
                       </item>
                      </layout>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="DisplayText" name="textBrowser4">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="sizeAdjustPolicy">
-                       <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-                      </property>
-                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -2812,84 +2893,302 @@ Double-click to reset to the standard 73 message</string>
            </widget>
           </widget>
          </item>
-         <item row="1" column="0" rowspan="2">
-          <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item row="0" column="4" colspan="2">
+          <widget class="QLabel" name="labDialFreq">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>USB dial frequency</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+  font-family: MS Shell Dlg 2;
+  font-size: 16pt;
+   color : yellow;
+   background-color : black;
+}
+QLabel[oob=&quot;true&quot;] {
+  background-color: red;
+}</string>
+           </property>
+           <property name="text">
+            <string>14.078 000</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="margin">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3" rowspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout_15">
            <item>
-            <widget class="QSpinBox" name="sbNB">
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="suffix">
-              <string>  %</string>
-             </property>
-             <property name="prefix">
-              <string>NB  </string>
-             </property>
-             <property name="minimum">
-              <number>-2</number>
-             </property>
-             <property name="maximum">
-              <number>25</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="SignalMeter" name="signal_meter_widget">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <widget class="QPushButton" name="houndButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;30dB recommended when only noise present&lt;br/&gt;Green when good&lt;br/&gt;Red when clipping may occur&lt;br/&gt;Yellow when too low&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Toggle FT8 hound mode On/Off</string>
              </property>
-             <property name="accessibleName">
-              <string>Rx Signal</string>
+             <property name="text">
+              <string>H</string>
              </property>
-             <property name="accessibleDescription">
-              <string>30dB recommended when only noise present
-Green when good
-Red when clipping may occur
-Yellow when too low</string>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::Panel</enum>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ft8Button">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Sunken</enum>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Switch to FT8 mode</string>
+             </property>
+             <property name="text">
+              <string>FT8</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ft4Button">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Switch to FT4 mode</string>
+             </property>
+             <property name="text">
+              <string>FT4</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="msk144Button">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Switch to MSK144 mode</string>
+             </property>
+             <property name="text">
+              <string>MSK</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="q65Button">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Switch to Q65 mode</string>
+             </property>
+             <property name="text">
+              <string>Q65</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="jt65Button">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Switch to JT65 mode</string>
+             </property>
+             <property name="text">
+              <string>JT65</string>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item row="0" column="0">
-          <widget class="BandComboBox" name="bandComboBox">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select operating band or enter frequency in MHz or enter kHz increment followed by k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <item row="2" column="4" colspan="2">
+          <widget class="QLabel" name="labUTC">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="accessibleName">
-            <string>Frequency entry</string>
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+  font-family: MS Shell Dlg 2;
+  font-size: 16pt;
+  background-color : black;
+  color : yellow;
+}</string>
            </property>
-           <property name="accessibleDescription">
-            <string>Select operating band or enter frequency in MHz or enter kHz increment followed by k.</string>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
            </property>
-           <property name="editable">
-            <bool>true</bool>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
            </property>
-           <property name="insertPolicy">
-            <enum>QComboBox::NoInsert</enum>
+           <property name="lineWidth">
+            <number>2</number>
            </property>
-           <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+           <property name="midLineWidth">
+            <number>0</number>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt; 2015 Jun 17 &lt;/p&gt;&lt;p align=&quot;center&quot;&gt; 01:23:45 &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="margin">
+            <number>5</number>
            </property>
           </widget>
+         </item>
+         <item row="0" column="2" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="1,0">
+           <item>
+            <widget class="BandComboBox" name="bandComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select operating band or enter frequency in MHz or enter kHz increment followed by k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="accessibleName">
+              <string>Frequency entry</string>
+             </property>
+             <property name="accessibleDescription">
+              <string>Select operating band or enter frequency in MHz or enter kHz increment followed by k.</string>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="readFreq">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If orange or red there has been a rig control failure, click to reset and read the dial frequency.  S implies split mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="accessibleDescription">
+              <string>If orange or red there has been a rig control failure, click to reset and read the dial frequency. S implies split mode.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+ font-family: helvetica;
+ font-size: 9pt;
+ font-weight: bold;
+ background-color: white;
+ color: black;
+ border-style: solid;
+ border-width:1px;
+ border-radius:10px;
+ border-color: gray;
+ max-width:20px;
+ max-height:20px;
+ min-width:20px;
+ min-height:20px;
+}
+QPushButton[state=&quot;error&quot;] {
+ background-color: red;
+}
+QPushButton[state=&quot;warning&quot;] {
+ background-color: orange;
+}
+QPushButton[state=&quot;ok&quot;] {
+ background-color: #00ff00;
+}</string>
+             </property>
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -2903,8 +3202,8 @@ Yellow when too low</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>842</width>
-     <height>21</height>
+     <width>880</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2940,6 +3239,7 @@ Yellow when too low</string>
     <addaction name="contest_log_action"/>
     <addaction name="fox_log_action"/>
     <addaction name="actionColors"/>
+    <addaction name="actionActiveStations"/>
     <addaction name="actionSWL_Mode"/>
    </widget>
    <widget class="QMenu" name="menuDecode">
@@ -2964,6 +3264,11 @@ Yellow when too low</string>
     <addaction name="actionNone"/>
     <addaction name="actionSave_decoded"/>
     <addaction name="actionSave_all"/>
+    <addaction name="separator"/>
+    <addaction name="actionDon_t_split_ALL_TXT"/>
+    <addaction name="actionSplit_ALL_TXT_yearly"/>
+    <addaction name="actionSplit_ALL_TXT_monthly"/>
+    <addaction name="actionDisable_writing_of_ALL_TXT"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -3512,6 +3817,46 @@ Yellow when too low</string>
     <string>Quick-Start Guide to WSJT-X 2.5.0 and MAP65 3.0</string>
    </property>
   </action>
+  <action name="actionDon_t_split_ALL_TXT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Don't split ALL.TXT</string>
+   </property>
+  </action>
+  <action name="actionSplit_ALL_TXT_yearly">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Split ALL.TXT yearly</string>
+   </property>
+  </action>
+  <action name="actionSplit_ALL_TXT_monthly">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Split ALL.TXT monthly</string>
+   </property>
+  </action>
+  <action name="actionDisable_writing_of_ALL_TXT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Disable writing of ALL.TXT</string>
+   </property>
+  </action>
+  <action name="actionActiveStations">
+   <property name="text">
+    <string>Active Stations</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -3571,8 +3916,6 @@ Yellow when too low</string>
   <tabstop>stopTxButton</tabstop>
   <tabstop>tuneButton</tabstop>
   <tabstop>cbMenus</tabstop>
-  <tabstop>bandComboBox</tabstop>
-  <tabstop>readFreq</tabstop>
   <tabstop>sbNB</tabstop>
   <tabstop>dxCallEntry</tabstop>
   <tabstop>dxGridEntry</tabstop>
@@ -3595,8 +3938,6 @@ Yellow when too low</string>
   <tabstop>cbShMsgs</tabstop>
   <tabstop>cbFast9</tabstop>
   <tabstop>cbAutoSeq</tabstop>
-  <tabstop>cbFirst</tabstop>
-  <tabstop>ignoreRegex</tabstop>
   <tabstop>cbTx6</tabstop>
   <tabstop>cbSWL</tabstop>
   <tabstop>pbBestSP</tabstop>
@@ -3621,14 +3962,6 @@ Yellow when too low</string>
   <tabstop>tx6</tabstop>
   <tabstop>txrb6</tabstop>
   <tabstop>txb6</tabstop>
-  <tabstop>textBrowser4</tabstop>
-  <tabstop>comboBoxHoundSort</tabstop>
-  <tabstop>sbNlist</tabstop>
-  <tabstop>sbMax_dB</tabstop>
-  <tabstop>sbNslots</tabstop>
-  <tabstop>comboBoxCQ</tabstop>
-  <tabstop>cbMoreCQs</tabstop>
-  <tabstop>pbFoxReset</tabstop>
   <tabstop>WSPRfreqSpinBox</tabstop>
   <tabstop>sbFST4W_RxFreq</tabstop>
   <tabstop>sbFST4W_FTol</tabstop>

@@ -18,7 +18,7 @@ class QAudioDeviceInfo;
 class QDir;
 class QNetworkAccessManager;
 class Bands;
-class FrequencyList_v2;
+class FrequencyList_v2_101;
 class StationList;
 class QStringListModel;
 class LotWUsers;
@@ -97,11 +97,14 @@ public:
   bool restart_audio_output () const;
 
   QString my_callsign () const;
-  //SP6XD
+
+//SP6XD
   QString regex_filter () const;
+
   QString my_grid () const;
   QString Field_Day_Exchange() const;
   QString RTTY_Exchange() const;
+  QString Contest_Name() const;
   void setEU_VHF_Contest();
   QFont text_font () const;
   QFont decoded_text_font () const;
@@ -166,8 +169,8 @@ public:
   Bands * bands ();
   Bands const * bands () const;
   IARURegions::Region region () const;
-  FrequencyList_v2 * frequencies ();
-  FrequencyList_v2 const * frequencies () const;
+  FrequencyList_v2_101 * frequencies ();
+  FrequencyList_v2_101 const * frequencies () const;
   StationList * stations ();
   StationList const * stations () const;
   QStringListModel * macros ();
@@ -183,8 +186,16 @@ public:
   bool highlight_by_mode () const;
   bool highlight_only_fields () const;
   bool include_WAE_entities () const;
- 
-  enum class SpecialOperatingActivity {NONE, NA_VHF, EU_VHF, FIELD_DAY, RTTY, WW_DIGI, FOX, HOUND};
+  bool highlight_73 () const;
+  void setSpecial_Hound();
+  void setSpecial_Fox();
+  void setSpecial_None();
+  bool highlight_DXcall () const;
+  bool highlight_DXgrid () const;
+  bool Individual_Contest_Name() const;
+
+//                                      0       1      2         3       4       5      6     7        8
+  enum class SpecialOperatingActivity {NONE, NA_VHF, EU_VHF, FIELD_DAY, RTTY, WW_DIGI, FOX, HOUND, ARRL_DIGI};
   SpecialOperatingActivity special_op_id () const;
 
   struct CalibrationParams

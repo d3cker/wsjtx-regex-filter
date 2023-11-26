@@ -1,17 +1,15 @@
-# WSJT-X 2.5.4 - Regex ignore filter
+# WSJT-X 2.6.1 - Regex ignore filter
 
 ## Build and binaries
 
 Navigate to [GitHub Actions](https://github.com/d3cker/wsjtx-regex-filter/actions) for build process details.
 
 [Available releases](https://github.com/d3cker/wsjtx-regex-filter/releases):
-- Ubuntu Focal 20.04
 - Ubuntu Jammy 22.04
-- Debian Buster 10
-- Debian Bullseye 11
-- Fedora 36
-- ARM (Raspbian) 64bit
-- ARM (Raspbian) 32bit
+- Debian Bookworm 12 x64
+- Debian Bookwork ARM64 (Raspbian)
+- Fedora 39
+- Microsoft Windows 10/11 (installer)
 - Patched source code .tgz archive
 
 You may need to remove `wsjtx`, `wsjtx-doc` and `wsjtx-data` before installing
@@ -21,7 +19,6 @@ If you want to compile this patch by your own try this instructions:
 
 - Install dependencies (Ubuntu/Debian/Raspbian)
 ```
-sudo apt-get update 
 sudo apt-get install -y gcc g++ clang gfortran cmake git asciidoc texinfo\
  qtmultimedia5-dev libqt5serialport5-dev qttools5-dev qttools5-dev-tools\
  libboost-all-dev libfftw3-dev libreadline-dev libusb-1.0-0-dev libudev-dev\
@@ -30,19 +27,20 @@ sudo apt-get install -y gcc g++ clang gfortran cmake git asciidoc texinfo\
 
 - Install dependencies (Fedora)
 ```
-sudo dnf install libgfortran fftw-libs-single qt5-qtbase\
- qt5-qtmultimedia qt5-qtserialport qt5-qtsvg\
- qt5-qtserialport libgomp boost libusbx portaudio
+sudo dnf install -y qt5-qtmultimedia-devel qt5-qtserialport-devel qt5-linguist\
+    boost-devel fftw-devel readline-devel systemd-devel libusb1-devel\
+    portaudio-devel patch gcc g++ gfortran cmake git asciidoc texinfo\
+    rpmdevtools rpmlint
 ```
 
-- Download `wsjtx-patched-2.5.4.tgz` from [Releases](https://github.com/d3cker/wsjtx-regex-filter/releases)
+- Download `wsjtx-patched-2.6.1.tgz` from [Releases](https://github.com/d3cker/wsjtx-regex-filter/releases)
 
 - Build package
 ```
-tar -xzvf wsjtx-patched-2.5.4.tgz
+tar -xzvf wsjtx-patched-2.6.1.tgz
 mkdir build
 cd build
-cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.5.4
+cmake -DWSJT_SKIP_MANPAGES=ON -DWSJT_GENERATE_DOCS=OFF ../wsjtx-2.6.1
 cmake --build . --target package
 ```
 

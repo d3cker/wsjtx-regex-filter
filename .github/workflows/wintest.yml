@@ -86,7 +86,7 @@ jobs:
 
 
   clean_artifacts:
-    needs: ['patch_source']
+    needs: ['build_windows']
     runs-on: ubuntu-latest
     steps:
       - name: Delete Artifact

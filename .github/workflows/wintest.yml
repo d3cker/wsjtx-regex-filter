@@ -246,7 +246,7 @@ jobs:
 
   clean_artifacts:
     needs: ['release_draft']
-    runs-on: ubunut-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Delete Artifact
         uses: GeekyEggo/delete-artifact@v1.0.0

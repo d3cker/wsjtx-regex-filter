@@ -68,9 +68,14 @@ jobs:
     needs: ['patch_source']
     runs-on: [ self-hosted , Windows , X64 ]
     steps:
-      - name: powershell allow...
+      - name: Update execution policy
         shell: cmd
         run: powershell -Command "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
+
+      - name: Clear old builds outside workspace
+        run: |
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx-output\") { rm C:\JTSDK64-Tools\tmp\wsjtx-output\ -r }
+            if (Test-Path -Path "C:\JTSDK64-Tools\tmp\wsjtx\") { rm C:\JTSDK64-Tools\tmp\wsjtx\ -r }
 
       - name: Get source code
         uses: actions/checkout@v2
@@ -80,13 +85,24 @@ jobs:
         with:
           name: wsjtx-patched-code
 
+      - name: Unpack and prepare to compile
+        run: |
+            tar -xzvf .\wsjtx-patched-2.6.1.tgz
+            tar -xzvf .\wsjtx-2.6.1\src\wsjtx.tgz -C C:\JTSDK64-Tools\tmp\
+
       - name: Check workspace
-        run: dir
+        run: dir C:\JTSDK64-Tools\tmp\
 
       - name: Check for JTSDK
         run: |
             cd c:\JTSDK64-Tools
             powershell -ExecutionPolicy Bypass -File .\jtsdk64_test.ps1
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v2
+        with:
+          name: wsjtx-windows-package
+          path: C:\JTSDK64-Tools\tmp\wsjtx-output\qt\5.15.2\2.6.1\Release\package\wsjtx-2.6.1-win64.exe
 
 
   clean_artifacts:
@@ -99,3 +115,5 @@ jobs:
           name: |
             wsjtx-patched-code
             wsjtx-source-code
+            wsjtx-windows-package
+

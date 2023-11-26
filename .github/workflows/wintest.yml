@@ -24,6 +24,10 @@ jobs:
     needs: ['download_wsjtx']
     runs-on: ubuntu-latest
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -90,6 +94,10 @@ jobs:
     needs: ['patch_source']
     runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -114,6 +122,10 @@ jobs:
     needs: ['patch_source']
     runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -138,6 +150,10 @@ jobs:
     needs: ['patch_source']
     runs-on: [ self-hosted , Linux , X64 ]
     steps:
+      - name: cleanup #https://github.com/actions/checkout/issues/211
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
       - name: Get source code
         uses: actions/checkout@v2
 
@@ -160,8 +176,9 @@ jobs:
 
   release_draft:
     needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39']
-    runs-on: [ self-hosted , Linux , X64 ]
+    runs-on: ubuntu-latest
     steps:
+
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
@@ -230,7 +247,7 @@ jobs:
 
   clean_artifacts:
     needs: ['release_draft']
-    runs-on: ubuntu22
+    runs-on: ubunut-latest
     steps:
       - name: Delete Artifact
         uses: GeekyEggo/delete-artifact@v1.0.0

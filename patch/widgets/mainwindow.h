@@ -78,6 +78,7 @@ class WideGraph;
 class LogQSO;
 class Transceiver;
 class MessageAveraging;
+class ActiveStations;
 class FoxLogWindow;
 class CabrilloLogWindow;
 class ColorHighlighting;
@@ -104,6 +105,7 @@ public:
   using Frequency = Radio::Frequency;
   using FrequencyDelta = Radio::FrequencyDelta;
   using Mode = Modes::Mode;
+  using SpecOp = Configuration::SpecialOperatingActivity;
 
   explicit MainWindow(QDir const& temp_directory, bool multiple, MultiSettings *,
                       QSharedMemory *shdmem, unsigned downSampleFactor,
@@ -125,6 +127,7 @@ public slots:
   void doubleClickOnCall (Qt::KeyboardModifiers);
   void doubleClickOnCall2(Qt::KeyboardModifiers);
   void doubleClickOnFoxQueue(Qt::KeyboardModifiers);
+  void doubleClickOnFoxInProgress(Qt::KeyboardModifiers modifiers);
   void readFromStdout();
   void p1ReadFromStdout();
   void setXIT(int n, Frequency base = 0u);
@@ -141,6 +144,12 @@ private:
 
 private slots:
   void initialize_fonts ();
+  void on_houndButton_clicked(bool checked);
+  void on_ft8Button_clicked();
+  void on_ft4Button_clicked();
+  void on_msk144Button_clicked();
+  void on_q65Button_clicked();
+  void on_jt65Button_clicked();
   void on_tx1_editingFinished();
   void on_tx2_editingFinished();
   void on_tx3_editingFinished();
@@ -261,6 +270,7 @@ private slots:
   void stopTuneATU();
   void auto_tx_mode(bool);
   void on_actionMessage_averaging_triggered();
+  void on_actionActiveStations_triggered();
   void on_contest_log_action_triggered ();
   void on_fox_log_action_triggered ();
   void on_actionColors_triggered();
@@ -275,7 +285,6 @@ private slots:
   void on_cbTx6_toggled(bool b);
   void on_cbMenus_toggled(bool b);
   void on_cbCQonly_toggled(bool b);
-  void on_cbFirst_toggled(bool b);
   void on_cbAutoSeq_toggled(bool b);
   void networkError (QString const&);
   void on_ClrAvgButton_clicked();
@@ -327,6 +336,7 @@ private slots:
   void remote_configure (QString const& mode, quint32 frequency_tolerance, QString const& submode
                          , bool fast_mode, quint32 tr_period, quint32 rx_df, QString const& dx_call
                          , QString const& dx_grid, bool generate_messages);
+  void callSandP2(int nline);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -392,6 +402,7 @@ private:
   QScopedPointer<HelpTextWindow> m_prefixes;
   QScopedPointer<HelpTextWindow> m_mouseCmnds;
   QScopedPointer<MessageAveraging> m_msgAvgWidget;
+  QScopedPointer<ActiveStations> m_ActiveStationsWidget;
   QScopedPointer<FoxLogWindow> m_foxLogWindow;
   QScopedPointer<CabrilloLogWindow> m_contestLogWindow;
   QScopedPointer<ColorHighlighting> m_colorHighlighting;
@@ -416,12 +427,17 @@ private:
   qint64  m_fullFoxCallTime;
 
   Frequency m_freqNominal;
+  Frequency m_freqNominalPeriod;
   Frequency m_freqTxNominal;
   Astro::Correction m_astroCorrection;
   bool m_reverse_Doppler;
 
   double  m_tRemaining;
   double  m_TRperiod;
+  double  m_fSpread;
+  double  m_s6;
+  double  m_fDither;
+  double  m_fAudioShift;
 
   float   m_DTtol;
   float   m_t0;
@@ -451,6 +467,9 @@ private:
   qint32  m_secID;
   qint32  m_idleMinutes;
   qint32  m_nSubMode;
+  qint32  m_nSubMode_Q65;
+  qint32  m_nSubMode_JT65;
+  qint32  m_nSubMode_JT4;
   qint32  m_nclearave;
   qint32  m_minSync;
   qint32  m_dBm;
@@ -458,7 +477,7 @@ private:
   qint32  m_k0;
   qint32  m_kdone;
   qint32  m_nPick;
-  FrequencyList_v2::const_iterator m_frequency_list_fcal_iter;
+  FrequencyList_v2_101::const_iterator m_frequency_list_fcal_iter;
   qint32  m_nTx73;
   qint32  m_UTCdisk;
   qint32  m_wait;
@@ -483,6 +502,12 @@ private:
   qint32  m_earlyDecode=41;
   qint32  m_earlyDecode2=47;
   qint32  m_nDecodes=0;
+  qint32  m_maxPoints=-1;
+  qint32  m_latestDecodeTime=-1;
+  qint32  m_points=-99;
+  qint32  m_score=0;
+  qint32  m_fDop=0;
+  qint32  m_echoSec0=0;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -539,6 +564,8 @@ private:
   bool    m_bBestSPArmed=false;
   bool    m_bOK_to_chk=false;
   bool    m_bSentReport=false;
+
+  SpecOp  m_specOp;
 
   enum
     {
@@ -629,11 +656,15 @@ private:
   QString m_xSent;               //Contest exchange sent
   QString m_xRcvd;               //Contest exchange received
   QString m_currentBand;
+  QString m_currentBandPeriod;
   QString m_nextCall;
   QString m_nextGrid;
   QString m_fileDateTime;
   QString m_inQSOwith;
   QString m_BestCQpriority;
+  QString m_deCall;
+  QString m_deGrid;
+  QString m_ready2call[50];
 
   QSet<QString> m_pfx;
   QSet<QString> m_sfx;
@@ -661,6 +692,34 @@ private:
   };
   QMap<QString,FixupQSO> m_fixupQSO;       //Key = HoundCall, value = info for QSO in progress
 
+  struct ActiveCall
+  {
+    QString grid4;
+    QString bands;
+    qint32 az;
+    qint32 points;
+  };
+  QMap<QString,ActiveCall> m_activeCall;   //Key = callsign, value = grid4, az, points for ARRL_DIGI
+
+  struct RecentCall
+  {
+    qint64 dialFreq;
+    qint32 audioFreq;
+    qint32 snr;
+    qint32 decodeTime;
+    bool   txEven;
+    bool   ready2call;
+  };
+  QMap<QString,RecentCall> m_recentCall;   //Key = callsign, value = snr, dialFreq, audioFreq, decodeTime
+
+  struct ARRL_logged
+  {
+    QDateTime time;
+    QString band;
+    qint32 points;
+  };
+  QList<ARRL_logged> m_arrl_log;
+
   QQueue<QString> m_houndQueue;        //Selected Hounds available for starting a QSO
   QQueue<QString> m_foxQSOinProgress;  //QSOs in progress: Fox has sent a report
   QQueue<qint64>  m_foxRateQueue;
@@ -678,7 +737,8 @@ private:
   QThread::Priority m_audioThreadPriority;
   bool m_bandEdited;
   bool m_splitMode;
-  bool m_monitoring;
+  bool m_monitoring=false;
+  bool m_echoRunning=false;
   bool m_tx_when_ready;
   bool m_transmitting;
   bool m_tune;
@@ -741,6 +801,7 @@ private:
   void CQTxFreq();
   void useNextCall();
   void abortQSO();
+  void updateRate();
   void write_all(QString txRx, QString message);
   bool isWorked(int itype, QString key, float fMHz=0, QString="");
 
@@ -763,6 +824,7 @@ private:
   void subProcessError (QProcess *, QProcess::ProcessError);
   void statusUpdate () const;
   void update_watchdog_label ();
+  void invalidate_frequencies_filter ();
   void on_the_minute ();
   void add_child_to_event_filter (QObject *);
   void remove_child_from_event_filter (QObject *);
@@ -772,8 +834,10 @@ private:
   void displayWidgets(qint64 n);
   QChar current_submode () const; // returns QChar {0} if submode is not appropriate
   void write_transmit_entry (QString const& file_name);
-  void selectHound(QString t);
+  void selectHound(QString t, bool bTopQueue);
   void houndCallers();
+  void updateFoxQSOsInProgressDisplay();
+  void foxQueueTopCallCommand();
   void foxRxSequencer(QString msg, QString houndCall, QString rptRcvd);
   void foxTxSequencer();
   void foxGenWaveform(int i,QString fm);
@@ -781,6 +845,9 @@ private:
   void to_jt9(qint32 n, qint32 istart, qint32 idone);
   bool is77BitMode () const;
   void cease_auto_Tx_after_QSO ();
+  Q_SLOT void ARRL_Digi_Display();
+  void ARRL_Digi_Update(DecodedText dt);
+  void activeWorked(QString call, QString band);
 };
 
 extern int killbyname(const char* progName);

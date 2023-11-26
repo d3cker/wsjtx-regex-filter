@@ -8,7 +8,7 @@ on:
 
 jobs:
   download_wsjtx:
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Downlaod source code
         run: wget https://wsjt.sourceforge.io/downloads/wsjtx-2.6.1.tgz
@@ -22,7 +22,7 @@ jobs:
 
   patch_source:
     needs: ['download_wsjtx']
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
 
   build_rpi64:
     needs: ['patch_source']
-    runs-on: ARM64
+    runs-on: [ self-hosted, Linux , ARM64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -88,7 +88,7 @@ jobs:
 
   build_jammy:
     needs: ['patch_source']
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -112,7 +112,7 @@ jobs:
 
   build_bookworm:
     needs: ['patch_source']
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -136,7 +136,7 @@ jobs:
 
   build_fedora39:
     needs: ['patch_source']
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Get source code
         uses: actions/checkout@v2
@@ -160,7 +160,7 @@ jobs:
 
   release_draft:
     needs: ['build_jammy' , 'build_rpi64' , 'build_bookworm' , 'build_fedora39']
-    runs-on: ubuntu22
+    runs-on: [ self-hosted , Linux , X64 ]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2

@@ -86,7 +86,7 @@ jobs:
 
 
   clean_artifacts:
-#    needs: ['release_draft']
+    needs: ['patch_source']
     runs-on: ubuntu-latest
     steps:
       - name: Delete Artifact

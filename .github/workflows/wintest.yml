@@ -200,8 +200,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-jammy-package/wsjtx_2.5.4_jammy_amd64.deb
-          asset_name: wsjtx_2.5.4_jammy_amd64.deb
+          asset_path: wsjtx-jammy-package/wsjtx_2.6.1_jammy_amd64.deb
+          asset_name: wsjtx_2.6.1_jammy_amd64.deb
           asset_content_type: application/gzip
 
       - name: upload bookworm artifact
@@ -230,8 +230,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release_draft.outputs.upload_url }}
-          asset_path: wsjtx-rpi64-package/wsjtx_2.5.4_arm64.deb
-          asset_name: wsjtx_2.5.4_arm64.deb
+          asset_path: wsjtx-rpi64-package/wsjtx_2.6.1_arm64.deb
+          asset_name: wsjtx_2.6.1_arm64.deb
           asset_content_type: application/gzip
 
       - name: upload patched source code
